@@ -28,7 +28,7 @@ class Monster extends Unit {
     print('$name의 상태: 체력 $health, 공격력 $attackPower, 방어력 $defense');
   }
 
-  void increaseDefenseIfNeeded() {
+  void increaseDefense() {
     turnCounter++;
 
     if (turnCounter >= 3) {

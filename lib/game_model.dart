@@ -80,6 +80,7 @@ class Game {
         character.attack(monster);
         if (monster.health > 0) {
           monster.attack(character);
+          monster.increaseDefense(); // 몬스터의 방어력 증가 여부 확인
         } else {
           deadmonsters++;
           print('${monster.name}을 처치했습니다!');
@@ -89,6 +90,7 @@ class Game {
       case '2':
         if (character.defense > 0) {
           character.defend(monster);
+          monster.increaseDefense(); // 몬스터의 방어력 증가 여부 확인
         } else {
           print('${character.name}은 방어력이 부족하여 방어할 수 없습니다.');
         }
@@ -99,6 +101,7 @@ class Game {
           character.attack(monster);
           if (monster.health > 0) {
             monster.attack(character);
+            monster.increaseDefense(); // 몬스터의 방어력 증가 여부 확인
           } else {
             deadmonsters++;
             print('${monster.name}을 처치했습니다!');
@@ -167,6 +170,8 @@ void saveGameResult(Character character, bool isWin) {
     if (input?.toLowerCase() == 'y') {
       String result =
           '''
+
+--------------------
 게임 결과
 --------------------
 이름: ${character.name}
@@ -176,7 +181,7 @@ void saveGameResult(Character character, bool isWin) {
 ''';
       try {
         file = File('result.txt');
-        file.writeAsStringSync(result);
+        file.writeAsStringSync(result, mode: FileMode.append);
       } catch (e) {
         print('결과 저장 중 오류가 발생했습니다: $e');
         return; // 오류 발생 시 함수 종료

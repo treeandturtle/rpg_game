@@ -1,3 +1,4 @@
-Batman,30,10
-Spiderman,20,10
-Superman,30,10
+rabit,30,30
+tree,20,30
+salmon,30,30
+turtle,60,20
