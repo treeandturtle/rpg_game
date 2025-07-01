@@ -8,6 +8,7 @@ import 'package:rpg_game/abstract_model.dart';
 // showStatus 메서드를 통해 몬스터의 상태를 출력합니다.
 // loadMonsterStats 메서드를 통해 몬스터의 상태를 파일에서 불러옵니다.
 class Monster extends Unit {
+  int turnCounter = 0;
   Monster(String name, int health, int attackpower)
     : super(name, health, attackpower, 0);
 
@@ -25,6 +26,16 @@ class Monster extends Unit {
   @override
   void showStatus() {
     print('$name의 상태: 체력 $health, 공격력 $attackPower, 방어력 $defense');
+  }
+
+  void increaseDefenseIfNeeded() {
+    turnCounter++;
+
+    if (turnCounter >= 3) {
+      defense += 2;
+      print('$name의 방어력이 증가했습니다! 현재 방어력: $defense');
+      turnCounter = 0; // 다시 카운터 초기화
+    }
   }
 }
 

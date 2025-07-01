@@ -11,16 +11,23 @@ import 'package:rpg_game/monster.model.dart';
 //loadCharacterStats 메서드를 통해 캐릭터의 상태를 파일에서 불러옵니다.
 //healthincrease 메서드를 통해 캐릭터의 체력을 증가시킬 수 있습니다.(도전 기능 1 )
 class Character extends Unit {
+  bool hasUsedItem = false; // 아이템 사용 여부
+  bool isItemEffectActive = false; // 이번 턴에 발동 중인지
   Character(super.name, super.health, super.attackPower, super.defense);
 
   @override
   void attack(Unit target) {
-    int damage = attackPower - target.defense;
+    int actualAttackPower = isItemEffectActive ? attackPower * 2 : attackPower;
+    int damage = actualAttackPower - target.defense;
     if (damage > 0) {
       target.health -= damage;
       print('$name은 ${target.name}에게 $damage의 피해를 입혔습니다.');
     } else {
       print('$name이 약해 ${target.name}에게 피해를 입히지 못했습니다.');
+    }
+    if (isItemEffectActive) {
+      print('아이템 효과가 이번 턴으로 끝났습니다.');
+      isItemEffectActive = false;
     }
   }
 
@@ -43,6 +50,17 @@ class Character extends Unit {
       print('${target.name}의 체력이 10 증가했습니다. 현재 체력: ${target.health}');
     } else {
       print('보너스 체력을 얻지 못했습니다 다음 기회에 ㅠㅠ');
+    }
+  }
+
+  void choiceItem() {
+    if (hasUsedItem) {
+      print('$name은 아이템을 사용할 수 없습니다. 아이템 개수가 부족합니다.');
+    } else {
+      hasUsedItem = true; // 한 번만 사용
+      isItemEffectActive = true; // 이번 턴에 발동!
+
+      print('$name이 아이템을 사용하여 공격력이 2배 증가했습니다. 현재 공격력: ${attackPower * 2}');
     }
   }
 }
