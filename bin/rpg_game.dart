@@ -16,6 +16,7 @@ void main() {
     name = stdin.readLineSync();
   }
   Character character = loadCharacterStats(name);
+  character.healthIncrease(character); // 도전 기능 1: 캐릭터의 체력 증가
   List<Monster> monsters = loadMonsterStats();
 
   Game game = Game(character: character, monsters: monsters);
