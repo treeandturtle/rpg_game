@@ -71,12 +71,14 @@ class Game {
   // 결과 저장 여부 확인 후 파일에 저장
   // 결과 저장은 승리/패배 여부에 따라 다르게 처리
   void saveGameResult(Character character, bool isWin) {
-    print('결과를 저장하시겠습니까? (y/n)');
-    String? input = stdin.readLineSync();
+    while (true) {
+      print('결과를 저장하시겠습니까? (y/n)');
+      String? input = stdin.readLineSync();
+      final File file;
 
-    if (input?.toLowerCase() == 'y') {
-      String result =
-          '''
+      if (input?.toLowerCase() == 'y') {
+        String result =
+            '''
 게임 결과
 --------------------
 이름: ${character.name}
@@ -84,13 +86,22 @@ class Game {
 결과: ${isWin ? '승리' : '패배'}
 --------------------
 ''';
-
-      final file = File('result.txt');
-      file.writeAsStringSync(result);
-
-      print('결과가 result.txt 파일에 저장되었습니다.');
-    } else {
-      print('결과 저장을 취소했습니다.');
+        try {
+          file = File('result.txt');
+          file.writeAsStringSync(result);
+        } catch (e) {
+          print('결과 저장 중 오류가 발생했습니다: $e');
+          return; // 오류 발생 시 함수 종료
+        }
+        print('결과가 result.txt 파일에 저장되었습니다.');
+        break; // 결과 저장 완료
+      } else if (input?.toLowerCase() == 'n') {
+        print('결과 저장을 취소했습니다.');
+        break; // 결과 저장 취소
+      } else {
+        print('잘못된 입력입니다. 다시 입력해주세요.');
+        continue; // 잘못된 입력 시 다시 묻기(사실 필요는 없지만 명시하기 위해 다시 돈다는 것을)
+      }
     }
   }
 
@@ -135,25 +146,23 @@ class Game {
           // 남은 몬스터가 있을 경우
           else {
             print('남은 몬스터 수: ${targetnumber - deadmonsters}');
-            bool valid = false;
-            while (!valid) {
+
+            while (true) {
               // 반복 대결 확인
               print('다음 몬스터와 대결하시겠습니까? (y/n)');
               String? choice = stdin.readLineSync();
-              if (choice == null || choice.isEmpty) {
-                print('입력하지 않았습니다.');
-              } else if (choice.toLowerCase() == 'n') {
+              if (choice?.toLowerCase() == 'n') {
                 print('게임을 종료합니다.');
-                saveGameResult(character, true); // 게임 결과 저장
+                saveGameResult(character, false); // 게임 결과 저장
                 return;
-              } else if (choice.toLowerCase() == 'y') {
+              } else if (choice?.toLowerCase() == 'y') {
                 print('다음 몬스터와 대결을 시작합니다.');
-                valid = true; // 내부 루프 탈출
+                break; // 내부 루프 탈출
               } else {
                 print('잘못된 입력입니다. 다시 입력해주세요.');
               }
             }
-            break;
+            break; // 두번째 while문 루프 탈출
           }
         }
       }
