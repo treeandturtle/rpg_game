@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:rpg_game/abstract_model.dart';
 import 'package:rpg_game/monster.model.dart';
 
 // class Character는 RPG 게임에서 플레이어의 캐릭터를 나타내는 모델입니다.
@@ -7,29 +8,21 @@ import 'package:rpg_game/monster.model.dart';
 // showStatus 메서드를 통해 캐릭터의 상태를 출력하며,
 // defend 메서드를 통해 몬스터의 공격에 대비할 수 있습니다.
 //loadCharacterStats 메서드를 통해 캐릭터의 상태를 파일에서 불러옵니다.
-class Character {
-  String name;
-  int health;
-  int attackPower;
-  int defense;
+class Character extends Unit {
+  Character(super.name, super.health, super.attackPower, super.defense);
 
-  Character({
-    required this.name,
-    required this.health,
-    required this.attackPower,
-    required this.defense,
-  });
-
-  void attackMonster(Monster monster) {
-    int damage = attackPower - monster.defense;
+  @override
+  void attack(Unit target) {
+    int damage = attackPower - target.defense;
     if (damage > 0) {
-      monster.health -= damage;
-      print('$name은 ${monster.name}에게 $damage의 피해를 입혔습니다.');
+      target.health -= damage;
+      print('$name은 ${target.name}에게 $damage의 피해를 입혔습니다.');
     } else {
-      print('$name이 약해 ${monster.name}에게 피해를 입히지 못했습니다.');
+      print('$name이 약해 ${target.name}에게 피해를 입히지 못했습니다.');
     }
   }
 
+  @override
   void showStatus() {
     print('$name의 상태: 체력 $health, 공격력 $attackPower, 방어력 $defense');
   }
@@ -61,10 +54,5 @@ Character loadCharacterStats(String name) {
   int attack = int.parse(parts[1]);
   int defense = int.parse(parts[2]);
 
-  return Character(
-    name: name,
-    health: health,
-    attackPower: attack,
-    defense: defense,
-  );
+  return Character(name, health, attack, defense);
 }

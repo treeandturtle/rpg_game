@@ -1,21 +1,18 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:rpg_game/character_model.dart';
+import 'package:rpg_game/abstract_model.dart';
 
-class Monster {
-  String name;
-  int health;
-  int attackPower;
-  int defense = 0;
+//클래스 Monster는 RPG 게임에서 몬스터를 나타내는 모델입니다.
+// attackCharacter 메서드를 통해 캐릭터를 공격하고,
+// showStatus 메서드를 통해 몬스터의 상태를 출력합니다.
+// loadMonsterStats 메서드를 통해 몬스터의 상태를 파일에서 불러옵니다.
+class Monster extends Unit {
+  Monster(String name, int health, int attackpower)
+    : super(name, health, attackpower, 0);
 
-  Monster({
-    required this.name,
-    required this.health,
-    required this.attackPower,
-  });
-
-  void attackCharacter(Character character) {
+  @override
+  void attack(Unit character) {
     int damage = attackPower - character.defense;
     if (damage > 0) {
       character.health -= damage;
@@ -25,6 +22,7 @@ class Monster {
     }
   }
 
+  @override
   void showStatus() {
     print('$name의 상태: 체력 $health, 공격력 $attackPower, 방어력 $defense');
   }
@@ -55,7 +53,7 @@ List<Monster> loadMonsterStats() {
 
     int attack = random.nextInt(maxAttack) + 1;
 
-    monsters.add(Monster(name: name, health: health, attackPower: attack));
+    monsters.add(Monster(name, health, attack));
   }
 
   return monsters;

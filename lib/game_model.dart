@@ -27,9 +27,9 @@ class Game {
 
     switch (choice) {
       case '1':
-        character.attackMonster(monster);
+        character.attack(monster);
         if (monster.health > 0) {
-          monster.attackCharacter(character);
+          monster.attack(character);
         } else {
           deadmonsters++;
           print('${monster.name}을 처치했습니다!');
