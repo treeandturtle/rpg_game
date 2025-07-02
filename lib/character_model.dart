@@ -15,6 +15,7 @@ class Character extends Unit {
   bool isItemEffectActive = false; // 이번 턴에 발동 중인지
   int exp = 0; // 경험치
   int level = 1; // 레벨
+  int gold = 0; // 골드
   Character(super.name, super.health, super.attackPower, super.defense);
 
   @override
@@ -35,7 +36,9 @@ class Character extends Unit {
 
   @override
   void showStatus() {
-    print('$name의 상태: 체력 $health, 공격력 $attackPower, 방어력 $defense');
+    print(
+      '$name의 상태: Lev.$level 체력 $health, 공격력 $attackPower, 방어력 $defense, 경험치 $exp, 골드 $gold',
+    );
   }
 
   void defend(Monster monster) {
@@ -93,7 +96,26 @@ class Character extends Unit {
         '$name이 레벨 $level로 상승했습니다! 현재 상태: 체력 $health, 공격력 $attackPower, 방어력 $defense',
       );
     } else {
-      print('$name의 현재 경험치: $exp');
+      print('$name의 현재 경험치: $exp, 레벨업까지 ${100 * level - exp} 남았습니다.');
+    }
+  }
+
+  void radomBox() {
+    int box = Random().nextInt(3) + 1; // 1, 2, 3 중 하나의 랜덤 값 생성
+    print('$name이 랜덤 박스를 열었습니다! ');
+    switch (box) {
+      case 1:
+        gold += 1000; // 체력 증가
+        print('$name이 1000골드를 획득했습니다. 현재 골드: $gold');
+        break;
+      case 2:
+        health -= 20; // 체력 감소
+        print('$name의 체력이 20 감소했습니다. 현재 체력: $health');
+        break;
+      case 3:
+        gold += 100000; // 골드 증가
+        print('대박이네요~~!!!!! $name이 100000골드를 획득했습니다. 현재 골드: $gold');
+        break;
     }
   }
 }

@@ -48,11 +48,14 @@ class Game {
         else {
           print('${targetmonster.name}를 처치 했습니다!');
           monsters.removeAt(monsterindex); // 몬스터 리스트에서 제거
+          character.radomBox(); // 몬스터 처치 후 랜덤 박스 획득 및 확인
           character.levelup(); // 레벨업 체크
 
           // 몬스터 처치 후 상태 출력
           if (targetnumber == deadmonsters) {
             print('모든 몬스터를 처치했습니다! 승리를 축하합니다~!! 게임을 종료합니다.');
+            prinBar();
+            character.showStatus(); // 캐릭터 상태 출력
             prinBar();
             saveGameResult(character, true); // 게임 결과 저장
             isGameOver = true; // 게임 종료
@@ -73,7 +76,7 @@ class Game {
   /// 사용자가 공격 또는 방어를 선택할 수 있으며,
   /// 몬스터의 체력이 0 이하가 되면 처치한 몬스터 수를 증가시킵니다.
   void battle(Monster monster) {
-    print('무엇을 하실 건가요? 공격하기(1), 방어하기(2), 아이템 사용하기(3)');
+    print('무엇을 하실 건가요? 공격하기(1), 방어하기(2), 아이템 사용하기(3), 상점 이용하기(4)');
     String? choice = stdin.readLineSync();
     // 실패시 반복 로직이 없는 이유는 startgame 메서드에서 반복을 하기 때문에
     switch (choice) {
@@ -108,9 +111,70 @@ class Game {
             print('${monster.name}을 처치했습니다!');
           }
         }
+        break;
+      case '4':
+        print('상점을 이용합니다.');
+        market(); // 상점 기능 호출
+        break;
       default:
         print('잘못된 선택입니다. 다시 시도하세요.');
     }
+  }
+
+  void market() {
+    // 상점 기능 구현
+    print('상점에 오신 것을 환영합니다!');
+    print('현재 골드: ${character.gold}');
+    print('''
+상점에서 구매할 수 있는 아이템:
+1. 체력 회복 포션 (100골드) - 체력을 20 회복합니다.
+2. 공격력 증가 물약 (1000골드) - 공격력을 2배로 증가시킵니다.
+3. 방어력 증가 물약 (1500골드) - 방어력을 5로 증가시킵니다.
+4. 상점 종료
+''');
+
+    String? choice = stdin.readLineSync();
+    switch (choice) {
+      case '1':
+        if (character.gold >= 100) {
+          character.health += 20;
+          character.gold -= 100;
+          print(
+            '체력 회복 포션을 구매했습니다. 현재 체력: ${character.health}, 남은 골드: ${character.gold}',
+          );
+        } else {
+          print('골드가 부족합니다.');
+        }
+        break;
+      case '2':
+        if (character.gold >= 1000) {
+          character.attackPower *= 2;
+          character.gold -= 1000;
+          print(
+            '공격력 증가 물약을 구매했습니다. 현재 공격력: ${character.attackPower}, 남은 골드: ${character.gold}',
+          );
+        } else {
+          print('골드가 부족합니다.');
+        }
+        break;
+      case '3':
+        if (character.gold >= 1500) {
+          character.defense += 5;
+          character.gold -= 1500;
+          print(
+            '방어력 증가 물약을 구매했습니다. 현재 방어력: ${character.defense}, 남은 골드: ${character.gold}',
+          );
+        } else {
+          print('골드가 부족합니다.');
+        }
+        break;
+      case '4':
+        print('상점을 종료합니다.');
+        return; // 상점 종료
+      default:
+        print('잘못된 선택입니다. 다시 시도하세요.');
+    }
+    market(); // 잘못 고르거나 골드가 부족할 경우를 위해 재귀호출
   }
 
   // 몬스터를 랜덤으로 선택하는 메서드
@@ -147,6 +211,8 @@ class Game {
       String? choice = stdin.readLineSync();
       if (choice?.toLowerCase() == 'n') {
         print('게임을 종료합니다.');
+        character.showStatus(); // 캐릭터 상태 출력
+        prinBar();
         saveGameResult(character, false); // 게임 결과 저장
         isGameOver = true;
       } else if (choice?.toLowerCase() == 'y') {
@@ -177,6 +243,10 @@ void saveGameResult(Character character, bool isWin) {
 --------------------
 이름: ${character.name}
 남은 체력: ${character.health}
+레벨: ${character.level}
+경험치: ${character.exp}
+골드: ${character.gold}
+아이템 사용 여부: ${character.hasUsedItem ? '사용함' : '사용하지 않음'}
 결과: ${isWin ? '승리' : '패배'}
 --------------------
 ''';
