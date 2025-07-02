@@ -48,6 +48,7 @@ class Game {
         else {
           print('${targetmonster.name}를 처치 했습니다!');
           monsters.removeAt(monsterindex); // 몬스터 리스트에서 제거
+          character.levelup(); // 레벨업 체크
 
           // 몬스터 처치 후 상태 출력
           if (targetnumber == deadmonsters) {

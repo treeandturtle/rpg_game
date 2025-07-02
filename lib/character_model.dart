@@ -13,6 +13,8 @@ import 'package:rpg_game/monster.model.dart';
 class Character extends Unit {
   bool hasUsedItem = false; // 아이템 사용 여부
   bool isItemEffectActive = false; // 이번 턴에 발동 중인지
+  int exp = 0; // 경험치
+  int level = 1; // 레벨
   Character(super.name, super.health, super.attackPower, super.defense);
 
   @override
@@ -61,6 +63,37 @@ class Character extends Unit {
       isItemEffectActive = true; // 이번 턴에 발동!
 
       print('$name이 아이템을 사용하여 공격력이 2배 증가했습니다. 현재 공격력: ${attackPower * 2}');
+    }
+  }
+
+  void levelup() {
+    exp += 100; // 경험치 증가
+    if (exp >= 100 * level) {
+      // 경험치가 100 이상이면 레벨업
+      level++;
+      exp = 0; // 경험치 초기화
+      int status = Random().nextInt(3) + 1; // 레벨업 시 랜덤으로 능력치 증가
+
+      switch (status) {
+        case 1:
+          health += 20; // 체력 증가
+          print('$name의 체력이 20 증가했습니다. 현재 체력: $health');
+          break;
+        case 2:
+          attackPower += 5; // 공격력 증가
+          print('$name의 공격력이 5 증가했습니다. 현재 공격력: $attackPower');
+          break;
+        case 3:
+          defense += 2; // 방어력 증가
+          print('$name의 방어력이 2 증가했습니다. 현재 방어력: $defense');
+          break;
+      }
+
+      print(
+        '$name이 레벨 $level로 상승했습니다! 현재 상태: 체력 $health, 공격력 $attackPower, 방어력 $defense',
+      );
+    } else {
+      print('$name의 현재 경험치: $exp');
     }
   }
 }
